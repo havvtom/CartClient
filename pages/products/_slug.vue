@@ -6,8 +6,32 @@
                 </div>
                 <div class="w-full max-w-lg mx-auto mt-5 md:ml-8 md:mt-0 md:w-1/2">
                     <h3 class="text-gray-700 uppercase text-lg">{{ product.name }}</h3>
-                    <span class="text-gray-500 mt-3">$125</span>
+                    <span class="text-gray-500 mt-3">{{ product.price }}</span>
                     <hr class="my-3">
+                    <div class="mt-3">
+                    	<form>
+                    		<ProductVariation 
+                    			v-for="(variations, name) in product.variations.data"
+                    			:key="name"
+                    			:variations="variations"
+                    			:type="name"
+                    			v-model="form.variation"
+                    		/>
+                    		<div class="field flex flex-col mb-5" v-if="form.variation">
+								<label class="mb-3 text-gray-700 capitalize text-lg">
+									Quantity
+								</label>
+								<div class="inline-block relative w-64">
+								  <select class="block appearance-none w-full text-gray-700 bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+								  	<option value="">1</option>
+								  </select>
+								  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+								    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+								  </div>
+								</div>
+							</div>
+                    	</form>
+                    </div>
                     <div class="mt-2">
                         <label class="text-gray-700 text-sm" for="count">Description:</label>
                         <div class="flex items-center mt-1">
@@ -24,8 +48,8 @@
                             <button class="h-5 w-5 rounded-full bg-pink-600 mr-2 focus:outline-none"></button>
                         </div>
                     </div>
-                    <div class="flex items-center mt-6">
-                        <button class="px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-500 focus:outline-none focus:bg-indigo-500">Order Now</button>
+                    <div class="flex items-center mt-6" v-if="form.variation">
+                        <button class="px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-500 focus:outline-none focus:bg-indigo-500">Add to cart</button>
                         <button class="mx-2 text-gray-600 border rounded-md p-2 hover:bg-gray-200 focus:outline-none">
                             <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                         </button>
@@ -85,11 +109,19 @@
 </template>
 
 <script type="text/javascript">
+	import ProductVariation from '@/components/products/ProductVariation'
 	export default {
 		data () {
 			return {
-				product: null
+				product: null,
+				form: {
+					variation: '',
+					quantity: 1
+				}
 			}
+		},
+		components:{
+			ProductVariation
 		},
 		async asyncData ({ params, app }) {
 			let response = await app.$axios.$get(`products/${params.slug}`)

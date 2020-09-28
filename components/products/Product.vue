@@ -13,7 +13,7 @@
 		            {{ product.name }}
 		        </h3>
 		    </nuxt-link>
-            <span class="text-gray-500 mt-2">$123</span>
+            <span class="text-gray-500 mt-2">{{ product.price }}</span>
         </div>
     </div> 
 </template>
